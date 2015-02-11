@@ -77,13 +77,26 @@
     // ROWS - run from left to right
     // --------------------------------------------------------------
     //
+    inverseBoard: function(board) {
+      return _.zip.apply(_.zip, board);
+    },
     // test if a specific row on this board contains a conflict
-    hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+    hasRowConflictAt: function(row) {
+     var count = 0;
+     for(var i = 0; i < row.length; i++) {
+       count += row[i];
+     }
+      return count > 1; // fixme
     },
 
     // test if any rows on this board contain conflicts
-    hasAnyRowConflicts: function() {
+    hasAnyRowConflicts: function(board) {
+      board = board || this.rows();
+      for(var i = 0; i < board.length; i++) {
+        if(this.hasRowConflictAt(board[i])) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -92,14 +105,17 @@
     // COLUMNS - run from top to bottom
     // --------------------------------------------------------------
     //
-    // test if a specific column on this board contains a conflict
+    // test invertedf a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      var inverted = this.inverseBoard(this.rows());
+      var context = this;
+
+      return this.hasAnyRowConflicts(inverted);
     },
 
 
