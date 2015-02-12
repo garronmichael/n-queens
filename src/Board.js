@@ -87,13 +87,6 @@
 
       return false;
     },
-      //   board = this.rotate90(board);
-      // }
-      // for (var i = 0; i < numberOfSides; i++) {
-      //   var condensedMatrix = this.rotate45Minor(board);
-      //   if (this.hasAnyRowConflicts(condensedMatrix)) {
-      //     return true;
-      //   }
 
     rotate45Major: function(board) {
       var board = board || this.rows();
@@ -113,8 +106,8 @@
       var outer = [];
       for(var i = 0; i < board.length; i++) {
         var inner = [];
-        for(var j = board[i].length; j > 0; j--) {
-          inner.push(board[i][j + i]);
+        for(var j = board[i].length - 1, k = 0; j >= 0; j--, k++) {
+          inner.push(board[k][j - i]);
         }
         outer.push(inner);
       }
@@ -161,7 +154,7 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return this.hasAnyDiagonalConficts; // fixme
+      return this.hasAnyDiagonalConflicts(); // fixme
     },
 
     // test if any major diagonals on this board contain conflicts
@@ -181,7 +174,18 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      var board = this.rows();
+      var numberOfSides = 4;
+      board = this.rotate90(board);
+      for (var i = 0; i < numberOfSides; i++) {
+        var condensedMatrix = this.rotate45Minor(board);
+        debugger;
+        if (this.hasAnyRowConflicts(condensedMatrix)) {
+          return true;
+        }
+        board = this.rotate90(board);
+      }
+      return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
