@@ -168,22 +168,22 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      // return this.hasAnyDiagonalConflicts(); // fixme
+    hasMinorDiagonalConflictAt: function(index) {
+      var counter = 0;
+      var board = this.rows();
+      for (var i = n + (n - 1);i >= 0;i--, index++) {
+        if (board[i][index] === 1 && index > 0 && index < n)
+      }
+      return counter > 1;
     },
 
-    // test if any minor diagonals on this board contain conflicts
+    // test if any minor diagonals on this (board) contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      var board = this.rows();
-      var numberOfSides = 4;
-      board = this.rotate90(board);
-      for (var i = 0; i < numberOfSides; i++) {
-        var condensedMatrix = this.rotate45Minor(board);
-        debugger;
-        if (this.hasAnyRowConflicts(condensedMatrix)) {
+      var n = this.get('n');
+      for (var i = 0;i < n;i++) {
+        if (this.hasMinorDiagnolConflictAt(i)) {
           return true;
         }
-        board = this.rotate90(board);
       }
       return false;
     }
