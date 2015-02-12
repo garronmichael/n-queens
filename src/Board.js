@@ -119,32 +119,63 @@
       return temp;
     },
     hasRowConflictAt: function(row) {
-     var count = 0;
-     for(var i = 0; i < row.length; i++) {
-       if (row[i] === 1) {
-         count++;
-       }
-     }
-    return count > 1;
+    //  var count = 0;
+    //  for(var i = 0; i < row.length; i++) {
+    //    if (row[i] === 1) {
+    //      count++;
+    //    }
+    //  }
+    // return count > 1;
+      var n = this.get('n');
+      var count = 0;
+      var board = this.rows();
+      for (var i = 0; i < n;i++) {
+        if (board[row][i] === 1) {
+          count++;
+        }
+      }
+      return count > 1;
     },
 
-    hasAnyRowConflicts: function(board) {
-      board = board || this.rows();
-      for(var i = 0; i < board.length; i++) {
-        if(this.hasRowConflictAt(board[i])) {
+
+    hasAnyRowConflicts: function() {
+      // board = board || this.rows();
+      // for(var i = 0; i < board.length; i++) {
+      //   if(this.hasRowConflictAt(board[i])) {
+      //     return true;
+      //   }
+      // }
+      var n = this.get('n');
+      for(var i = 0; i < n; i++) {
+        if(this.hasRowConflictAt(i)) {
           return true;
         }
       }
       return false;
     },
 
-    hasColConflictAt: function(colIndex) {
-      return false;
+    hasColConflictAt: function(index) {
+      var count = 0;
+      var n = this.get('n');
+      var board = this.rows();
+      for(var i = 0; i < n; i++) {
+        if(board[i][index] === 1) {
+          count++;
+        }
+      }
+      return count > 1;
     },
 
     hasAnyColConflicts: function() {
-      var rotated = this.rotate90(this.rows());
-      return this.hasAnyRowConflicts(rotated);
+      // var rotated = this.rotate90(this.rows());
+      // return this.hasAnyRowConflicts(rotated);
+      var n = this.get('n');
+      for(var i = 0; i < n; i++) {
+        if(this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -153,13 +184,26 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return this.hasAnyDiagonalConflicts(); // fixme
+    hasMajorDiagonalConflictAt: function(index) {
+      var count = 0;
+      var board = this.rows();
+      for(var i = 0; i < board.length; i++) {
+        if(board[i][i + index] === 1) {
+          count += 1;
+        }
+      }
+      return count > 1;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return this.hasAnyDiagonalConflicts();
+      var n = this.get('n');
+      for(var i = -n; i < n; i++) {
+        if(this.hasMajorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -173,8 +217,8 @@
       var n = this.get('n');
       var board = this.rows();
       for (var i = 0;i < n; i++, index--) {
-        if (board[i][index] === 1 && index > 0 && index < n) {
-          return true;
+        if (board[i][index] === 1) {
+          counter++;
         }
       }
       return counter > 1;
@@ -209,6 +253,6 @@
 window.board = new Board([
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [1, 0, 0, 0],
-      [0, 1, 0, 0]
+      [0, 0, 0, 1],
+      [0, 0, 1, 0]
     ]);
