@@ -74,22 +74,68 @@
     =                 TODO: fill in these Helper Functions                    =
     =========================================================================*/
 
-    // ROWS - run from left to right
-    // --------------------------------------------------------------
-    //
-    inverseBoard: function(board) {
-      return _.zip.apply(_.zip, board);
+    hasAnyDiagonalConflicts: function() {
+      var board = this.rows();
+      var numberOfSides = 4;
+      for (var i = 0; i < numberOfSides; i++) {
+        var condensedMatrix = this.rotate45Major(board);
+        if (this.hasAnyRowConflicts(condensedMatrix)) {
+          return true;
+        }
+        board = this.rotate90(board);
+      }
+
+      for (var i = 0; i < numberOfSides; i++) {
+        var condensedMatrix = this.rotate45Minor(board);
+        if (this.hasAnyRowConflicts(condensedMatrix)) {
+          return true;
+        }
+        board = this.rotate90(board);
+      }
+      return false;
     },
-    // test if a specific row on this board contains a conflict
+
+    rotate45Major: function(board) {
+      var board = board || this.rows();
+      var outer = [];
+      for(var i = 0; i < board.length; i++) {
+        var inner = [];
+        for(var j = 0; j < board[i].length; j++) {
+          inner.push(board[j][j + i]);
+        }
+        outer.push(inner);
+      }
+      return outer;
+    },
+
+    rotate45Minor: function(board) {
+      var board = board || this.rows();
+      var outer = [];
+      for(var i = 0; i < board.length; i++) {
+        var inner = [];
+        for(var j = board[i].length; j > 0; j--) {
+          inner.push(board[i][j + i]);
+        }
+        outer.push(inner);
+      }
+      return outer;
+    },
+
+    rotate90: function(board) {
+      debugger;
+      var temp = _.zip.apply(_.zip, board);
+      return temp;
+    },
     hasRowConflictAt: function(row) {
      var count = 0;
      for(var i = 0; i < row.length; i++) {
-       count += row[i];
+       if (row[i] === 1) {
+         count++;
+       }
      }
-      return count > 1; // fixme
+    return count > 1;
     },
 
-    // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function(board) {
       board = board || this.rows();
       for(var i = 0; i < board.length; i++) {
@@ -97,25 +143,16 @@
           return true;
         }
       }
-      return false; // fixme
+      return false;
     },
 
-
-
-    // COLUMNS - run from top to bottom
-    // --------------------------------------------------------------
-    //
-    // test invertedf a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      return false;
     },
 
-    // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      var inverted = this.inverseBoard(this.rows());
-      var context = this;
-
-      return this.hasAnyRowConflicts(inverted);
+      var rotated = this.rotate90(this.rows());
+      return this.hasAnyRowConflicts(rotated);
     },
 
 
@@ -130,7 +167,7 @@
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      return false;
     },
 
 
@@ -160,5 +197,12 @@
       });
     });
   };
-
 }());
+
+
+window.board = new Board([
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 1],
+      [0, 0, 1, 0]
+    ]);
